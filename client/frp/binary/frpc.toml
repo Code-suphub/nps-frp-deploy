@@ -1,0 +1,44 @@
+# FRP 客户端配置文件
+# 复制此文件为 frpc.toml 并根据需要修改
+
+serverAddr = "你的服务器IP"
+serverPort = 7000
+
+auth.method = "token"
+auth.token = "your_frp_token_here"
+
+# 日志配置
+log.to = "./frpc.log"
+log.level = "info"
+log.maxDays = 3
+
+# 传输层安全 (可选)
+# transport.tls.enable = true
+
+# ========== 代理配置 ==========
+
+# Bitwarden 示例
+[[proxies]]
+name = "bitwarden"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 8080
+remotePort = 7001
+# transport.useEncryption = true
+# transport.useCompression = true
+
+# Nextcloud 示例
+# [[proxies]]
+# name = "nextcloud"
+# type = "tcp"
+# localIP = "127.0.0.1"
+# localPort = 8081
+# remotePort = 7002
+
+# HTTP/HTTPS 示例 (需要服务端配置 vhost)
+# [[proxies]]
+# name = "web"
+# type = "http"
+# localIP = "127.0.0.1"
+# localPort = 8080
+# customDomains = ["bitwarden.yourdomain.com"]

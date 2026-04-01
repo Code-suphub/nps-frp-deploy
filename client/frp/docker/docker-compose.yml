@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  frpc:
+    image: snowdreamtech/frpc
+    container_name: ${CONTAINER_NAME:-frpc}
+    restart: always
+    network_mode: host
+    volumes:
+      - ./${FRPC_CONFIG_FILE:-frpc.toml}:/etc/frp/frpc.toml:ro
+    command: >
+      -s ${FRPS_SERVER}
+      -p ${FRPS_PORT}
+      -t ${FRPS_TOKEN}
+      ${FRPC_TUNNEL_ARGS:-}
+    environment:
+      - TZ=Asia/Shanghai

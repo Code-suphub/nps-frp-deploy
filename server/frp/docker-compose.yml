@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  frps:
+    image: snowdreamtech/frps
+    container_name: frps
+    restart: always
+    ports:
+      - "${FRPS_BIND_PORT:-7000}:7000"
+      - "${FRPS_DASHBOARD_PORT:-7500}:7500"
+      - "${FRPS_ALLOW_PORTS_START:-7001}-${FRPS_ALLOW_PORTS_END:-7010}:${FRPS_ALLOW_PORTS_START:-7001}-${FRPS_ALLOW_PORTS_END:-7010}"
+    volumes:
+      - ./frps.toml:/etc/frp/frps.toml:ro
+    environment:
+      - TZ=Asia/Shanghai

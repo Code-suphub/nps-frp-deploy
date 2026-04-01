@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  npc:
+    image: yisier1/npc
+    container_name: ${CONTAINER_NAME:-npc}
+    restart: always
+    network_mode: host
+    command: >
+      -server=${NPS_SERVER}
+      -vkey=${NPS_VKEY}
+      -type=${NPS_TYPE:-tcp}
+    environment:
+      - TZ=Asia/Shanghai
