@@ -40,15 +40,24 @@ tail -f npc.log
 
 ## 支持的系统
 
-脚本会自动检测系统架构并下载对应版本：
+脚本会自动检测操作系统和架构并下载对应版本：
 
 | 系统 | 架构 | 自动检测 |
 |------|------|---------|
 | Linux | AMD64 (x86_64) | ✅ |
 | Linux | ARM64 | ✅ |
 | Linux | ARMv7 | ✅ |
-| macOS | AMD64 | 需手动设置 ARCH=darwin_amd64 |
-| Windows | AMD64 | 需手动设置 ARCH=windows_amd64 |
+| macOS | AMD64 (Intel) | ✅ |
+| macOS | ARM64 (Apple Silicon) | ✅ |
+| Windows | AMD64 | ✅ |
+
+**手动设置架构（可选）：**
+```bash
+# 在 .env 文件中设置
+ARCH=darwin_amd64    # macOS Intel
+ARCH=darwin_arm64    # macOS Apple Silicon
+ARCH=windows_amd64   # Windows
+```
 
 ---
 
@@ -167,4 +176,47 @@ chmod +x npc
 查看日志：
 ```bash
 cat npc.log
+```
+
+---
+
+## 验证连接是否成功
+
+### 方法一：查看客户端日志
+
+```bash
+tail -f npc.log
+```
+
+连接成功时会出现：
+```
+[I] [client.go:xxx]  Successfully connected to server
+```
+
+### 方法二：服务端查看在线客户端
+
+1. 登录 NPS Web 管理界面
+2. 左侧菜单「客户端」
+3. 查看客户端状态是否为「在线」
+
+### 方法三：测试隧道连通性
+
+假设你创建了一个 TCP 隧道，服务端端口为 `9001`，本地端口为 `8080`：
+
+```bash
+# 在其他机器上访问服务端端口
+curl http://你的服务器IP:9001
+```
+
+如果能访问到本地服务，说明穿透成功。
+
+### 方法四：查看服务端日志（Docker 方式）
+
+```bash
+docker compose logs -f
+```
+
+查看是否有客户端连接记录：
+```
+New client connection from xxx.xxx.xxx.xxx
 ```

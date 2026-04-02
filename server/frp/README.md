@@ -291,6 +291,60 @@ docker run -d \
 
 ---
 
+## 验证客户端连接
+
+### 方法一：Dashboard 查看
+
+1. 登录 Dashboard (`http://你的服务器IP:7500`)
+2. 查看左侧菜单：
+   - 「Proxies」- 查看所有隧道状态
+   - 「Connections」- 查看当前连接
+3. 确认你的隧道显示为在线状态
+
+### 方法二：查看服务端日志
+
+**Docker 方式：**
+```bash
+docker compose logs -f
+```
+
+**Binary 方式：**
+```bash
+tail -f frps.log
+```
+
+连接成功时会显示：
+```
+frps-log: client login success
+frps-log: proxy [tunnel-name] start
+```
+
+### 方法三：测试隧道连通性
+
+假设你创建了一个 TCP 隧道，远程端口为 `7001`，本地服务端口为 `8080`：
+
+```bash
+# 在其他机器上测试访问
+curl http://你的服务器IP:7001
+```
+
+如果能访问到客户端本地服务，说明穿透成功。
+
+### 方法四：查看客户端日志
+
+在客户端机器上：
+```bash
+tail -f frpc.log
+```
+
+连接成功时会出现：
+```
+login to server success
+proxy started successfully
+```
+
+---
+
 ## 常见问题排查
 
 ### 1. 无法访问 Dashboard
