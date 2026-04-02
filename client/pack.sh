@@ -55,14 +55,16 @@ tar czf "$OUTPUT_FILE" \
 
 if [ $? -eq 0 ]; then
     SIZE=$(du -h "$OUTPUT_FILE" | cut -f1)
+    # 获取绝对路径用于显示
+    ABS_PATH=$(cd "$(dirname "$OUTPUT_FILE")" && pwd)/$(basename "$OUTPUT_FILE")
     echo ""
     echo "✓ 打包成功"
     echo ""
-    echo "文件: /data/nps-frp/dist/nps-frp-client-deploy.tar.gz"
+    echo "文件: $ABS_PATH"
     echo "大小: $SIZE"
     echo ""
     echo "下载命令:"
-    echo "  scp root@$(curl -s ifconfig.me 2>/dev/null || echo '你的服务器IP'):/data/nps-frp/dist/nps-frp-client-deploy.tar.gz ."
+    echo "  scp root@$(curl -s ifconfig.me 2>/dev/null || echo '你的服务器IP'):$ABS_PATH ."
 else
     echo "✗ 打包失败"
     exit 1
