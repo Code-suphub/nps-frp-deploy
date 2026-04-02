@@ -41,25 +41,46 @@ if [ "$MODE" = "binary" ]; then
     echo ""
     echo "使用二进制方式启动 NPS..."
 
-    # 检测架构
+    # 检测操作系统和架构
     if [ -z "$ARCH" ] || [ "$ARCH" = "auto" ]; then
-        case $(uname -m) in
-            x86_64)
-                ARCH="linux_amd64"
+        # 检测操作系统
+        OS=$(uname -s)
+        case $OS in
+            Linux)
+                OS_TYPE="linux"
                 ;;
-            aarch64|arm64)
-                ARCH="linux_arm64"
-                ;;
-            armv7l)
-                ARCH="linux_arm_v7"
+            Darwin)
+                OS_TYPE="darwin"
                 ;;
             *)
-                echo "❌ 无法自动检测架构: $(uname -m)"
-                echo "   请手动设置 ARCH 变量，可选: linux_amd64, linux_arm64, darwin_amd64"
+                echo "❌ 不支持的操作系统: $OS"
+                echo "   请手动设置 ARCH 变量，格式: {os}_{arch}"
+                echo "   可选: linux_amd64, linux_arm64, darwin_amd64, darwin_arm64"
                 exit 1
                 ;;
         esac
-        echo "✓ 自动检测到架构: $ARCH"
+
+        # 检测架构
+        case $(uname -m) in
+            x86_64|amd64)
+                ARCH_TYPE="amd64"
+                ;;
+            aarch64|arm64)
+                ARCH_TYPE="arm64"
+                ;;
+            armv7l)
+                ARCH_TYPE="arm_v7"
+                ;;
+            *)
+                echo "❌ 无法自动检测架构: $(uname -m)"
+                echo "   请手动设置 ARCH 变量，格式: {os}_{arch}"
+                echo "   可选: linux_amd64, linux_arm64, darwin_amd64, darwin_arm64"
+                exit 1
+                ;;
+        esac
+
+        ARCH="${OS_TYPE}_${ARCH_TYPE}"
+        echo "✓ 自动检测到系统: $OS ($ARCH)"
     fi
 
     # 检查二进制文件
