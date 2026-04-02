@@ -109,6 +109,36 @@ ARCH=windows_amd64   # Windows
 
 ---
 
+## 下一步：配置隧道（重要）
+
+FRP 的隧道配置与 NPS 不同，**直接在客户端配置文件 `frpc.toml` 中定义**。
+
+### 快速配置
+
+编辑 `frpc.toml`：
+
+```toml
+serverAddr = "你的服务器IP"
+serverPort = 7000
+auth.method = "token"
+auth.token = "你的Token"
+
+[[proxies]]
+name = "my-service"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 8080      # 本地服务端口
+remotePort = 7001     # 外网访问端口
+```
+
+### 启动后测试
+
+从外网访问：`http://服务器IP:7001` → 转发到本地 `127.0.0.1:8080`
+
+详细配置示例请查看 `frpc.toml` 文件或 README.md
+
+---
+
 ## 设置开机自启
 
 ### Linux (systemd)
