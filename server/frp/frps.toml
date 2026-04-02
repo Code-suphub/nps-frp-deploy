@@ -1,10 +1,1 @@
 bindPort = 7000
-webServer.addr = "0.0.0.0"
-webServer.port = 7500
-webServer.user = "admin"
-webServer.password = "your_frp_password_here"
-auth.method = "token"
-auth.token = "your_frp_token_here"
-allowPorts = [
-  { start = 7001, end = 7010 }
-]

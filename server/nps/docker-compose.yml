@@ -7,7 +7,7 @@ services:
     restart: always
     ports:
       - "${NPS_BRIDGE_PORT:-8024}:8024"
-      - "${NPS_WEB_PORT:-8080}:8080"
+      - "${NPS_WEB_PORT:-8080}:${NPS_WEB_PORT:-8080}"
       - "${NPS_ALLOW_PORTS_START:-9000}-${NPS_ALLOW_PORTS_END:-9100}:${NPS_ALLOW_PORTS_START:-9000}-${NPS_ALLOW_PORTS_END:-9100}"
     volumes:
       - ./conf:/conf

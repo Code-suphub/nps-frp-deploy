@@ -1,1 +1,73 @@
+# ============================================
+# NPS-FRP 部署工具 - Git 忽略文件配置
+# ============================================
+
+# 敏感配置文件（包含密码、Token等）
+**/.env
+.env.*
+!.env.example
+
+# 运行时日志文件
+*.log
+logs/
+
+# 进程PID文件
+*.pid
+
+# 下载的二进制文件
+# NPS
+**/nps
+**/npc
+nps.tar.gz
+npc.tar.gz
+
+# FRP
+**/frps
+**/frpc
+frps.tar.gz
+frpc.tar.gz
+
+# 压缩包文件
+*.tar.gz
+*.zip
+*.tar
+
+# NPS 运行时数据（会自动生成）
+server/nps/conf/clients.json
+server/nps/conf/hosts.json
+server/nps/conf/tasks.json
+server/nps/conf/*.log
+
+# FRP 运行时数据
+server/frp/frps.toml
+
+# 打包输出目录
 dist/
+!dist/README.md
+
+# macOS 系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows 系统文件
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux 临时文件
+*~
+*.swp
+*.swo
+.nfs*
+
+# IDE 配置文件
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# 备份文件
+*.bak
+*.backup
+*.old
