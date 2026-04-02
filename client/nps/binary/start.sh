@@ -60,8 +60,27 @@ if [ "$ARCH" = "auto" ] || [ -z "$ARCH" ]; then
             ;;
     esac
 
+    # 特殊处理：NPS 没有 darwin_arm64，使用 darwin_amd64 + Rosetta
+    if [ "$OS_TYPE" = "darwin" ] && [ "$ARCH_TYPE" = "arm64" ]; then
+        echo "⚠️  NPS 未提供 darwin_arm64 版本，将使用 darwin_amd64 (通过 Rosetta 运行)"
+        ARCH_TYPE="amd64"
+        USE_ROSETTA=1
+    fi
+
     ARCH="${OS_TYPE}_${ARCH_TYPE}"
     echo "✓ 自动检测到系统: $OS ($ARCH)"
+fi
+
+# 检查是否需要 Rosetta
+if [ "$USE_ROSETTA" = "1" ]; then
+    if ! /usr/bin/pgrep oahd >/dev/null 2>&1; then
+        echo ""
+        echo "⚠️  首次在 Apple Silicon Mac 上运行 x86 程序"
+        echo "   需要安装 Rosetta，执行以下命令："
+        echo "   softwareupdate --install-rosetta --agree-to-license"
+        echo ""
+        exit 1
+    fi
 fi
 
 # 检查二进制文件
@@ -72,10 +91,25 @@ if [ ! -f "$NPC_BINARY" ]; then
     DOWNLOAD_URL="https://github.com/ehang-io/nps/releases/download/v0.26.10/${ARCH}_client.tar.gz"
 
     echo "下载地址: $DOWNLOAD_URL"
-    curl -L -o npc.tar.gz "$DOWNLOAD_URL"
+    HTTP_CODE=$(curl -L -o npc.tar.gz -w "%{http_code}" "$DOWNLOAD_URL")
 
-    if [ $? -ne 0 ]; then
-        echo "❌ 下载失败，请手动下载: https://github.com/ehang-io/nps/releases"
+    if [ "$HTTP_CODE" != "200" ]; then
+        echo "❌ 下载失败 (HTTP $HTTP_CODE)"
+        rm -f npc.tar.gz
+        echo ""
+        echo "可能的原因："
+        echo "  1. 该版本的预编译包不存在: ${ARCH}_client.tar.gz"
+        echo "  2. 网络连接问题"
+        echo ""
+        echo "请手动下载: https://github.com/ehang-io/nps/releases"
+        exit 1
+    fi
+
+    # 检查文件大小（避免下载到 404 页面）
+    FILE_SIZE=$(stat -f%z npc.tar.gz 2>/dev/null || stat -c%s npc.tar.gz 2>/dev/null || echo "0")
+    if [ "$FILE_SIZE" -lt "1000" ]; then
+        echo "❌ 下载文件异常过小 ($FILE_SIZE bytes)，可能不存在该版本"
+        rm -f npc.tar.gz
         exit 1
     fi
 
